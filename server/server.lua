@@ -46,7 +46,7 @@ AddEventHandler('snazz:washMoney', function(amount)
 	if Config.EnableTimer == true then
 		if amount > 0 and xPlayer.getAccount('black_money').money >= amount then
 			xPlayer.removeAccountMoney('black_money', amount)
-            TriggerClientEvent("pNotify:SendNotification", -1, {text = "Waiting to wash money..."})			
+            TriggerClientEvent("pNotify:SendNotification", source, {text = "Waiting to wash money..."})			
 			
 			if Config.Discord then
 				sendToDiscord(65280, 'New Money Wash Detected','**Player Name:** ' .. playerName .. '\n' .. '**Player ID:** ' .. source .. '\n' .. '**Remaining Dirty Money:** $' .. xPlayer.getAccount('black_money').money .. '\n\n' .. 'Player has started to wash their money. The player spent $' .. discordAmount .. ' of dirty money and is getting $' .. washedTotal .. ' in clean back!',"")
@@ -54,20 +54,20 @@ AddEventHandler('snazz:washMoney', function(amount)
 			
 			Citizen.Wait(Config.MoneyWashTime)
 		
-            TriggerClientEvent("pNotify:SendNotification", -1, {text = "You have recieved " .. ESX.Math.GroupDigits(washedTotal) .. " clean money!"})
+            TriggerClientEvent("pNotify:SendNotification", source, {text = "You have recieved " .. ESX.Math.GroupDigits(washedTotal) .. " clean money!"})
 			xPlayer.addMoney(washedTotal)
 		else
-            TriggerClientEvent("pNotify:SendNotification", -1, {text = "Not enough black money!", type = "error"})
+            TriggerClientEvent("pNotify:SendNotification", source, {text = "Not enough black money!", type = "error"})
 			TriggerClientEvent('esx:showNotification', xPlayer.source, ('Not enough black money!'))
 		end
 	else 
 	
 		if amount > 0 and xPlayer.getAccount('black_money').money >= amount then
 			xPlayer.removeAccountMoney('black_money', amount)
-			TriggerClientEvent("pNotify:SendNotification", -1, {text = "You have washed " .. ESX.Math.GroupDigits(amount) .. " dirty money." .. "You have recieved" .. ESX.Math.GroupDigits(washedTotal) .. "clean money!"})
+			TriggerClientEvent("pNotify:SendNotification", source, {text = "You have washed " .. ESX.Math.GroupDigits(amount) .. " dirty money." .. "You have recieved" .. ESX.Math.GroupDigits(washedTotal) .. "clean money!"})
 			xPlayer.addMoney(washedTotal)
 		else
-            TriggerClientEvent("pNotify:SendNotification", -1, {text = "Not enough black money!", type = "error"})
+            TriggerClientEvent("pNotify:SendNotification", source, {text = "Not enough black money!", type = "error"})
             TriggerClientEvent('esx:showNotification', xPlayer.source, ('Not enough black money!'))
 		end
 	end
