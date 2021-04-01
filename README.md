@@ -7,7 +7,7 @@ Interactive and highly configurable moneywash system for FiveM. Players have to 
 - Interactive
 - Able to change how much black money they pay and get back (%)
 - Whitelisted jobs feature (you can set it so that only certain jobs can moneywash)
+- Detailed discord webhook
 
 # Coming Soon:
 - Cop alerts if moneywash fails
-- Discord webhooks
