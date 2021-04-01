@@ -33,3 +33,7 @@ Config.MoneyWashTime = 5 * second
 
 -- How much money the user pays in black money (they get back this amount take away the percent specified above)
 Config.AmountPerDelivery = 5000
+
+-- Discord Webhooks
+Config.Discord = false
+Config.DiscordWebhook = ''
