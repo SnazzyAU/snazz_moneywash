@@ -12,7 +12,19 @@ local Keys = {
 
 -- Variables
 ESX = nil
+src = source
 local curRanPos
+
+
+local blips = {
+
+	{title="GANK 1", colour=2, id=225, x = 1014.98, y = -2333.22, z = 30.52},
+	{title="GANK 2", colour=49, id=225, x = -836.1, y = -693.7, z = 26.51},
+	{title="GANK 3", colour=67, id=225, x = -1735.19, y = -817.84, z = 22.93},
+	{title="GANK 4", colour=46, id=225, x = 2176.48, y = 3856.25, z = 32.10},
+	{title="GANK 5", colour=27, id=225, x = -906.4, y = -230.24, z = 39.82}
+	}
+
 
 RegisterCommand("tpToStart", function(source, args, rawCommand)
 	local player = GetPlayerPed(-1)
@@ -43,6 +55,21 @@ RegisterNetEvent('esx:setJob')
 AddEventHandler('esx:setJob', function(job)
 	ESX.PlayerData.job = job
 end)
+
+function sendToDiscord(color, name, message, footer)
+	local embed = {
+		{
+			["color"] = color,
+			["title"] = "**".. name .."**",
+			["description"] = message,
+			["footer"] = {
+				["text"] = footer,
+			},
+		}
+	}
+  
+	PerformHttpRequest(Config.DiscordWebhook, function(err, text, headers) end, 'POST', json.encode({username = name, embeds = embed}), { ['Content-Type'] = 'application/json' })
+end
 
 -- Sorts Config.WhitelistedJobs into each line and checks if the players job matches it. 
 function Authorized()
@@ -114,7 +141,7 @@ Citizen.CreateThread(function()
 						Wait(0) 
 					end
                     
-					--print("[DEBUG] Before the while.")
+					print("[DEBUG] Before the while.")
 					while true do
 						Wait(0)
 						local ped = PlayerPedId()
@@ -131,6 +158,10 @@ Citizen.CreateThread(function()
 							
 							if IsControlJustPressed(0,Keys["E"]) then
 								--print("[DEBUG] Triggered server event.")
+								local ped = PlayerPedId()
+								local pPos = GetEntityCoords(ped)
+								local playerName = GetPlayerName(ped)
+				
 								TriggerServerEvent('snazz:washMoney', Config.AmountPerDelivery)
 								break
 							end
@@ -139,7 +170,7 @@ Citizen.CreateThread(function()
                 end
             end
         else
-            --print("[DEBUG] not Authorized or Config.Whitelist is set to true")
+            print("[DEBUG] not Authorized or Config.Whitelist is set to true")
         end
     end
 end)
