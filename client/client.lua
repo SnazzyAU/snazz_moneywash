@@ -106,7 +106,7 @@ Citizen.CreateThread(function()
                 DrawText3D(Config.StartLocation.x, Config.StartLocation.y, Config.StartLocation.z, "Press [E] to wash your money!")
 
                 if IsControlJustPressed(0,Keys["E"]) then
-                    print("[DEBUG] E was pressed.")
+                    --print("[DEBUG] E was pressed.")
 
                     RandomLocation()
                     
@@ -114,7 +114,7 @@ Citizen.CreateThread(function()
 						Wait(0) 
 					end
                     
-					print("[DEBUG] Before the while.")
+					--print("[DEBUG] Before the while.")
 					while true do
 						Wait(0)
 						local ped = PlayerPedId()
@@ -130,7 +130,7 @@ Citizen.CreateThread(function()
 							--print("[DEBUG] Ater distance check.")
 							
 							if IsControlJustPressed(0,Keys["E"]) then
-								print("[DEBUG] Triggered server event.")
+								--print("[DEBUG] Triggered server event.")
 								TriggerServerEvent('snazz:washMoney', Config.AmountPerDelivery)
 								break
 							end
@@ -139,7 +139,7 @@ Citizen.CreateThread(function()
                 end
             end
         else
-            print("[DEBUG] not Authorized or Config.Whitelist is set to true")
+            --print("[DEBUG] not Authorized or Config.Whitelist is set to true")
         end
     end
 end)
