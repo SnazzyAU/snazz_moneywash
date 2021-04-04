@@ -13,9 +13,6 @@ Config.WhitelistedJobs = {
     'ambulance'
 }
 
--- Required cops
-Config.RequiredCops = 0
-
 -- Configure locations below (x, y, z)
 Config.StartLocation = vector3(-182.60, 6389.56, 31.49)
 
