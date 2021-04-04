@@ -147,10 +147,6 @@ Citizen.CreateThread(function()
 					end
                 end
             end
-        else
-            if Config.DebugMode then
-	    	print("[DEBUG] not Authorized or Config.Whitelist is set to true")
-	    end
         end
     end
 end)
