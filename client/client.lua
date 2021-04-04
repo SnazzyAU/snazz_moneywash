@@ -15,11 +15,6 @@ ESX = nil
 src = source
 local curRanPos
 
-RegisterCommand("tpToStart", function(source, args, rawCommand)
-	local player = GetPlayerPed(-1)
-	SetEntityCoords(player, Config.StartLocation.x,Config.StartLocation.y,Config.StartLocation.z)
-end)
-
 -- Grabs a random location from Config.MoneyWashLocations, then sorts it into X and Y so that it can set a GPS waypoint.
 function RandomLocation()
     curRanPos = Config.MoneyWashLocations[math.random(1, #Config.MoneyWashLocations)]
