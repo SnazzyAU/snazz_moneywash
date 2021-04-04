@@ -37,3 +37,6 @@ Config.AmountPerDelivery = 5000
 -- Discord Webhooks
 Config.Discord = false
 Config.DiscordWebhook = ''
+
+-- Debug mode, for developers
+Config.DebugMode = false

@@ -33,7 +33,6 @@ end
 
 RegisterServerEvent('snazz:washMoney')
 AddEventHandler('snazz:washMoney', function(amount)
-    print("Started trigger")
 	local playerName = GetPlayerName(source) 
 	local xPlayer = ESX.GetPlayerFromId(source)
 	tax = Config.PercentageCut
