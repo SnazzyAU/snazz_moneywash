@@ -45,21 +45,6 @@ AddEventHandler('esx:setJob', function(job)
 	ESX.PlayerData.job = job
 end)
 
-function sendToDiscord(color, name, message, footer)
-	local embed = {
-		{
-			["color"] = color,
-			["title"] = "**".. name .."**",
-			["description"] = message,
-			["footer"] = {
-				["text"] = footer,
-			},
-		}
-	}
-  
-	PerformHttpRequest(Config.DiscordWebhook, function(err, text, headers) end, 'POST', json.encode({username = name, embeds = embed}), { ['Content-Type'] = 'application/json' })
-end
-
 -- Sorts Config.WhitelistedJobs into each line and checks if the players job matches it. 
 function Authorized()
 	if ESX.PlayerData.job == nil then
@@ -122,7 +107,9 @@ Citizen.CreateThread(function()
                 DrawText3D(Config.StartLocation.x, Config.StartLocation.y, Config.StartLocation.z, "Press [E] to wash your money!")
 
                 if IsControlJustPressed(0,Keys["E"]) then
-                    --print("[DEBUG] E was pressed.")
+                    if Config.DebugMode then
+			print("[DEBUG] E was pressed.")
+		    end
 
                     RandomLocation()
                     
@@ -130,23 +117,30 @@ Citizen.CreateThread(function()
 						Wait(0) 
 					end
                     
-					print("[DEBUG] Before the while.")
+					if Config.DebugMode then
+						print("[DEBUG] Before the while.")
+					end
+						
 					while true do
 						Wait(0)
 						local ped = PlayerPedId()
 						local pPos = GetEntityCoords(ped)
-						--print("[DEBUG] After wait.")
 						
 						local dist2 = #(pPos-curRanPos)
-						--print("[DEBUG] Got dist2. Before Check.")
-						--print(dist2)
 
 						if dist2 < 3.0 then
 							DrawText3D(curRanPos.x,curRanPos.y,curRanPos.z, "Press [E] to deliver the package!")
-							--print("[DEBUG] Ater distance check.")
 							
+							if Config.DebugMode then
+								print("[DEBUG] Ater distance check.")
+							end
+									
 							if IsControlJustPressed(0,Keys["E"]) then
-								--print("[DEBUG] Triggered server event.")
+								
+								if Config.DebugMode then
+									print("[DEBUG] Triggered server event.")
+								end
+									
 								local ped = PlayerPedId()
 								local pPos = GetEntityCoords(ped)
 								local playerName = GetPlayerName(ped)
@@ -159,7 +153,9 @@ Citizen.CreateThread(function()
                 end
             end
         else
-            print("[DEBUG] not Authorized or Config.Whitelist is set to true")
+            if Config.DebugMode then
+	    	print("[DEBUG] not Authorized or Config.Whitelist is set to true")
+	    end
         end
     end
 end)
