@@ -15,6 +15,11 @@ ESX = nil
 src = source
 local curRanPos
 
+RegisterCommand("tpToStart", function(source, args, rawCommand)
+	local player = GetPlayerPed(-1)
+	SetEntityCoords(player, Config.StartLocation.x,Config.StartLocation.y,Config.StartLocation.z)
+end)
+
 -- Grabs a random location from Config.MoneyWashLocations, then sorts it into X and Y so that it can set a GPS waypoint.
 function RandomLocation()
     curRanPos = Config.MoneyWashLocations[math.random(1, #Config.MoneyWashLocations)]
@@ -39,6 +44,21 @@ RegisterNetEvent('esx:setJob')
 AddEventHandler('esx:setJob', function(job)
 	ESX.PlayerData.job = job
 end)
+
+function sendToDiscord(color, name, message, footer)
+	local embed = {
+		{
+			["color"] = color,
+			["title"] = "**".. name .."**",
+			["description"] = message,
+			["footer"] = {
+				["text"] = footer,
+			},
+		}
+	}
+  
+	PerformHttpRequest(Config.DiscordWebhook, function(err, text, headers) end, 'POST', json.encode({username = name, embeds = embed}), { ['Content-Type'] = 'application/json' })
+end
 
 -- Sorts Config.WhitelistedJobs into each line and checks if the players job matches it. 
 function Authorized()
@@ -102,9 +122,7 @@ Citizen.CreateThread(function()
                 DrawText3D(Config.StartLocation.x, Config.StartLocation.y, Config.StartLocation.z, "Press [E] to wash your money!")
 
                 if IsControlJustPressed(0,Keys["E"]) then
-                    if Config.DebugMode then
-			print("[DEBUG] E was pressed.")
-		    end
+                    --print("[DEBUG] E was pressed.")
 
                     RandomLocation()
                     
@@ -112,41 +130,36 @@ Citizen.CreateThread(function()
 						Wait(0) 
 					end
                     
-					if Config.DebugMode then
-						print("[DEBUG] Before the while.")
-					end
-						
+					print("[DEBUG] Before the while.")
 					while true do
 						Wait(0)
 						local ped = PlayerPedId()
 						local pPos = GetEntityCoords(ped)
+						--print("[DEBUG] After wait.")
 						
 						local dist2 = #(pPos-curRanPos)
+						--print("[DEBUG] Got dist2. Before Check.")
+						--print(dist2)
 
 						if dist2 < 3.0 then
 							DrawText3D(curRanPos.x,curRanPos.y,curRanPos.z, "Press [E] to deliver the package!")
+							--print("[DEBUG] Ater distance check.")
 							
-							if Config.DebugMode then
-								print("[DEBUG] Ater distance check.")
-							end
-									
 							if IsControlJustPressed(0,Keys["E"]) then
-								
-								if Config.DebugMode then
-									print("[DEBUG] Triggered server event.")
-								end
-									
+								--print("[DEBUG] Triggered server event.")
 								local ped = PlayerPedId()
 								local pPos = GetEntityCoords(ped)
 								local playerName = GetPlayerName(ped)
 				
-								TriggerServerEvent('snazz:washMoney', Config.AmountPerDelivery)
+								TriggerServerEvent('snazz:washMoney',Config.AmountPerDelivery)
 								break
 							end
 						end
 					end
                 end
             end
+        else
+            print("[DEBUG] not Authorized or Config.Whitelist is set to true")
         end
     end
 end)
