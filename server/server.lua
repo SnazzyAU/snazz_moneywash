@@ -33,41 +33,48 @@ end
 
 RegisterServerEvent('snazz:washMoney')
 AddEventHandler('snazz:washMoney', function(amount)
+    print("Started trigger")
 	local playerName = GetPlayerName(source) 
 	local xPlayer = ESX.GetPlayerFromId(source)
 	tax = Config.PercentageCut
-    amount = ESX.Math.Round(tonumber(amount))
 	washedCash = amount * tax
 	washedTotal = ESX.Math.Round(tonumber(washedCash))
+	trueAmount = Config.AmountPerDelivery
 	discordAmount = Config.AmountPerDelivery
 
-
-	if Config.EnableTimer == true then
-		if amount > 0 and xPlayer.getAccount('black_money').money >= amount then
-			xPlayer.removeAccountMoney('black_money', amount)
-            TriggerClientEvent("pNotify:SendNotification", source, {text = "Waiting to wash money..."})			
+	if amount == trueAmount then
+		if Config.EnableTimer == true then
+			if amount > 0 and xPlayer.getAccount('black_money').money >= amount then
+				xPlayer.removeAccountMoney('black_money', amount)
+				TriggerClientEvent("pNotify:SendNotification", source, {text = "Waiting to wash money..."})			
+				
+				if Config.Discord then
+					sendToDiscord(65280, 'New Money Wash Detected','**Player Name:** ' .. playerName .. '\n' .. '**Player ID:** ' .. source .. '\n' .. '**Remaining Dirty Money:** $' .. xPlayer.getAccount('black_money').money .. '\n\n' .. 'Player has started to wash their money. The player spent $' .. discordAmount .. ' of dirty money and is getting $' .. washedTotal .. ' in clean back!',"")
+				end
+				
+				Citizen.Wait(Config.MoneyWashTime)
 			
-			if Config.Discord then
-				sendToDiscord(65280, 'New Money Wash Detected','**Player Name:** ' .. playerName .. '\n' .. '**Player ID:** ' .. source .. '\n' .. '**Remaining Dirty Money:** $' .. xPlayer.getAccount('black_money').money .. '\n\n' .. 'Player has started to wash their money. The player spent $' .. discordAmount .. ' of dirty money and is getting $' .. washedTotal .. ' in clean back!',"")
+				TriggerClientEvent("pNotify:SendNotification", -1, {text = "You have recieved " .. ESX.Math.GroupDigits(washedTotal) .. " clean money!"})
+				xPlayer.addMoney(washedTotal)
+			else
+				TriggerClientEvent("pNotify:SendNotification", source, {text = "Not enough black money!", type = "error"})
+				TriggerClientEvent('esx:showNotification', xPlayer.source, ('Not enough black money!'))
 			end
-			
-			Citizen.Wait(Config.MoneyWashTime)
+		else 
 		
-            TriggerClientEvent("pNotify:SendNotification", source, {text = "You have recieved " .. ESX.Math.GroupDigits(washedTotal) .. " clean money!"})
-			xPlayer.addMoney(washedTotal)
-		else
-            TriggerClientEvent("pNotify:SendNotification", source, {text = "Not enough black money!", type = "error"})
-			TriggerClientEvent('esx:showNotification', xPlayer.source, ('Not enough black money!'))
+			if amount > 0 and xPlayer.getAccount('black_money').money >= amount then
+				xPlayer.removeAccountMoney('black_money', amount)
+				TriggerClientEvent("pNotify:SendNotification", source, {text = "You have washed " .. ESX.Math.GroupDigits(amount) .. " dirty money." .. "You have recieved" .. ESX.Math.GroupDigits(washedTotal) .. "clean money!"})
+				xPlayer.addMoney(washedTotal)
+			else
+				TriggerClientEvent("pNotify:SendNotification", source, {text = "Not enough black money!", type = "error"})
+				TriggerClientEvent('esx:showNotification', xPlayer.source, ('Not enough black money!'))
+			end
 		end
-	else 
-	
-		if amount > 0 and xPlayer.getAccount('black_money').money >= amount then
-			xPlayer.removeAccountMoney('black_money', amount)
-			TriggerClientEvent("pNotify:SendNotification", source, {text = "You have washed " .. ESX.Math.GroupDigits(amount) .. " dirty money." .. "You have recieved" .. ESX.Math.GroupDigits(washedTotal) .. "clean money!"})
-			xPlayer.addMoney(washedTotal)
-		else
-            TriggerClientEvent("pNotify:SendNotification", source, {text = "Not enough black money!", type = "error"})
-            TriggerClientEvent('esx:showNotification', xPlayer.source, ('Not enough black money!'))
+	else
+		if Config.Discord then
+			sendToDiscord(65280, 'Possible Modder Detected','**Player Name:** ' .. playerName .. '\n' .. '**Player ID:** ' .. source .. '\n' .. '**Remaining Dirty Money:** $' .. xPlayer.getAccount('black_money').money .. '\n\n' .. 'Player is more than likely a modder.',"")
 		end
+		TriggerClientEvent("pNotify:SendNotification", source, {text = "I smell a modder...", type = "error"})
 	end
 end)
